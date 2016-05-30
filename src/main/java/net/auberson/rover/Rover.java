@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.pi4j.io.i2c.I2CBus;
 
-import net.auberson.pi4j.drivers.PCA9685;
+import net.auberson.rover.component.ServoBoard;
 
 /**
  * Provides access to the Rover's equipment: Servo board, webcams, manipulator,
@@ -12,20 +12,28 @@ import net.auberson.pi4j.drivers.PCA9685;
  */
 public class Rover {
 	private static Rover instance = null;
-	private PCA9685 servoBoard;
-	
-	protected Rover() throws IOException{
-		servoBoard = new PCA9685(I2CBus.BUS_1, 0x6f);
+	private ServoBoard servoBoard;
+
+	protected Rover() throws IOException {
+		servoBoard = new ServoBoard(I2CBus.BUS_1, 0x6f);
 	}
 
-	public static Rover getInstance() throws IOException{
+	public static Rover getInstance() throws IOException {
 		if (instance == null) {
 			instance = new Rover();
 		}
 		return instance;
 	}
-	
-	public PCA9685 getServoBoard() {
+
+	public ServoBoard getServoBoard() {
 		return servoBoard;
+	}
+
+	public void waitfor(long howMuch) {
+		try {
+			Thread.sleep(howMuch);
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
+		}
 	}
 }

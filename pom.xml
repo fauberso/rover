@@ -12,6 +12,11 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.pi4j</groupId>
+			<artifactId>pi4j-gpio-extension</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.21</version>
@@ -51,7 +56,7 @@
 									</fileset>
 								</scp>
 								<sshexec host="${hostname}" username="${username}"
-									password="${password}" command="java -jar rover-main-*.jar"
+									password="${password}" command="sudo java -jar rover-main-*.jar"
 									trust="true" failonerror="false" />
 							</tasks>
 						</configuration>
