@@ -18,36 +18,36 @@ import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 
-public class ServoBoard {
+public final class ServoBoard {
 
 	private final static Logger LOG = LoggerFactory.getLogger(ServoBoard.class);
 
-	final PCA9685GpioProvider gpioProvider;
-	final GpioController gpioController;
+	private final PCA9685GpioProvider gpioProvider;
+	private final GpioController gpioController;
 	
-	final List<GpioPinOutput> pwmOutputs = new ArrayList<GpioPinOutput>(32);
+	private final List<GpioPinOutput> pwmOutputs = new ArrayList<GpioPinOutput>(32);
 
-	public final GpioPinPwmOutput camAzimuth;
-	public final GpioPinPwmOutput camElevation;
+	final GpioPinPwmOutput camAzimuth;
+	final GpioPinPwmOutput camElevation;
 
-	public final GpioPinPwmOutput leftTrackSpeed;
-	public final GpioPinPwmOutput leftTrackForward;
-	public final GpioPinPwmOutput leftTrackBackwards;
+	final GpioPinPwmOutput leftTrackSpeed;
+	final GpioPinPwmOutput leftTrackForward;
+	final GpioPinPwmOutput leftTrackBackwards;
 
-	public final GpioPinPwmOutput rightTrackForward;
-	public final GpioPinPwmOutput rightTrackBackwards;
-	public final GpioPinPwmOutput rightTrackSpeed;
+	final GpioPinPwmOutput rightTrackForward;
+	final GpioPinPwmOutput rightTrackBackwards;
+	final GpioPinPwmOutput rightTrackSpeed;
 
-	public static final int RAW_MIN = 80;
-	public static final int SERVO_MIN = 900;
-	public static final int SERVO_MAX = 2100;
-	public static final int RAW_MAX = 20400;	
+	static final int RAW_MIN = 80;
+	static final int SERVO_MIN = 900;
+	static final int SERVO_MAX = 2100;
+	static final int RAW_MAX = 20400;	
 
-	public static final int SERVO_RANGE = SERVO_MAX - SERVO_MIN; // 1200
-	public static final int SERVO_NEUTRAL = (SERVO_RANGE / 2) + SERVO_MIN; // 1500
+	static final int SERVO_RANGE = SERVO_MAX - SERVO_MIN; // 1200
+	static final int SERVO_NEUTRAL = (SERVO_RANGE / 2) + SERVO_MIN; // 1500
 
-	public static final int RAW_RANGE = SERVO_MAX - RAW_MIN; // 1200
-	public static final int RAW_NEUTRAL = (RAW_RANGE / 2) + RAW_MIN; // 1500
+	static final int RAW_RANGE = SERVO_MAX - RAW_MIN; // 1200
+	static final int RAW_NEUTRAL = (RAW_RANGE / 2) + RAW_MIN; // 1500
 	
 	public ServoBoard(int busNumber, int deviceAddress) throws IOException {
 		LOG.debug("Initializing PCA9685 at Bus " + busNumber + ", device " + deviceAddress);
@@ -104,50 +104,16 @@ public class ServoBoard {
 		gpioProvider.reset();
 	}
 
-	public void setServo(GpioPinPwmOutput output, float value) {
+	void setServo(GpioPinPwmOutput output, float value) {
 		gpioProvider.setPwm(output.getPin(), Math.round(SERVO_RANGE * value) + SERVO_MIN);
 	}
 	
-	public void setFullRange(GpioPinPwmOutput output, float value) {
+	void setFullRange(GpioPinPwmOutput output, float value) {
 		gpioProvider.setPwm(output.getPin(), Math.round(RAW_RANGE * value) + RAW_MIN);
 	}
 	
-	public void set(GpioPinPwmOutput output, int duration) {
+	void set(GpioPinPwmOutput output, int duration) {
 		gpioProvider.setPwm(output.getPin(), duration);
-	}
-	
-	
-	// Actuator methods
-	public void setCamElevation(float value) {
-		setServo(camElevation, value);
-	}
-	
-	public void setCamAzimuth(float value) {
-		setServo(camAzimuth, value);
-	}
-	
-	public void setLeftTrack(float value, boolean forwards) {
-		set(forwards?leftTrackBackwards:leftTrackForward, RAW_MIN);
-		set(forwards?leftTrackForward:leftTrackBackwards, RAW_MAX);
-		setFullRange(leftTrackSpeed, value);
-	}
-	
-	public void stopLeftTrack(boolean brake) {
-		set(leftTrackForward, RAW_MIN);
-		set(leftTrackBackwards, RAW_MIN);
-		set(leftTrackSpeed, brake?RAW_MAX:RAW_MIN);
-	}
-
-	public void setRightTrack(float value, boolean forwards) {
-		set(forwards?rightTrackBackwards:rightTrackForward, RAW_MIN);
-		set(forwards?rightTrackForward:rightTrackBackwards, RAW_MAX);
-		setFullRange(rightTrackSpeed, value);
-	}
-	
-	public void stopRightTrack(boolean brake) {
-		set(rightTrackForward, RAW_MIN);
-		set(rightTrackBackwards, RAW_MIN);
-		set(rightTrackSpeed, brake?RAW_MAX:RAW_MIN);
 	}
 
 }

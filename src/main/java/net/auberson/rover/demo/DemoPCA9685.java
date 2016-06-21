@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.auberson.rover.Rover;
+import net.auberson.rover.component.Rover;
 import net.auberson.rover.component.ServoBoard;
 
 public class DemoPCA9685 {
@@ -17,17 +17,16 @@ public class DemoPCA9685 {
 	public static void main(String[] args) throws IOException {
 		boolean exit = false;
 
-		int camElevation = 15;
-		int camAzimuth = 15;
+		int camElevation = 5;
+		int camAzimuth = 5;
 
 		float leftSpeed = 0f;
 		boolean leftFwd = true;
 
 		LOG.info("Initializing Controller...");
 		Rover rover = Rover.getInstance();
-		ServoBoard servoBoard = rover.getServoBoard();
 		LOG.info("Controller Ready.");
-		test(rover, servoBoard);
+		test(rover);
 		LOG.info("Controller Ready. Accepting commands.");
 
 		while (!exit) {
@@ -39,20 +38,20 @@ public class DemoPCA9685 {
 				exit = true;
 				break;
 			case 'w':
-				servoBoard.set(servoBoard.camElevation, ++camElevation * 100);
-				System.out.println("camElevation=" + camElevation);
+				rover.setCamElevation(++camElevation / 10f);
+				System.out.println("camElevation=0." + camElevation);
 				break;
 			case 's':
-				servoBoard.set(servoBoard.camElevation, --camElevation * 100);
-				System.out.println("camElevation=" + camElevation);
+				rover.setCamElevation(--camElevation / 10f);
+				System.out.println("camElevation=0." + camElevation);
 				break;
 			case 'a':
-				servoBoard.set(servoBoard.camAzimuth, ++camAzimuth * 100);
-				System.out.println("camAzimuth=" + camAzimuth);
+				rover.setCamAzimuth(++camAzimuth / 10f);
+				System.out.println("camAzimuth=0." + camAzimuth);
 				break;
 			case 'd':
-				servoBoard.set(servoBoard.camAzimuth, --camAzimuth * 100);
-				System.out.println("camAzimuth=" + camAzimuth);
+				rover.setCamAzimuth(--camAzimuth / 10f);
+				System.out.println("camAzimuth=0." + camAzimuth);
 				break;
 			case 'r':
 				if (!leftFwd) {
@@ -60,7 +59,7 @@ public class DemoPCA9685 {
 					leftFwd = true;
 				}
 				leftSpeed = leftSpeed + .1f;
-				servoBoard.setLeftTrack(leftSpeed, leftFwd);
+				rover.setLeftTrack(leftSpeed, leftFwd);
 				System.out.println("leftFwd=" + leftSpeed);
 				break;
 			case 'f':
@@ -69,11 +68,11 @@ public class DemoPCA9685 {
 					leftFwd = false;
 				}
 				leftSpeed = leftSpeed + .1f;
-				servoBoard.setLeftTrack(leftSpeed, leftFwd);
+				rover.setLeftTrack(leftSpeed, leftFwd);
 				System.out.println("leftBack=" + leftSpeed);
 				break;
 			case 't':
-				test(rover, servoBoard);
+				test(rover);
 				break;
 			default:
 				break;
@@ -81,39 +80,39 @@ public class DemoPCA9685 {
 		}
 	}
 
-	public static void test(Rover rover, ServoBoard servoBoard) {
+	public static void test(Rover rover) {
 		LOG.info("PWM test procedure:");
 
 		LOG.info("Testing left track");
-		servoBoard.setLeftTrack(1f, true);
+		rover.setLeftTrack(1f, true);
 		rover.waitfor(10000);
-		servoBoard.setLeftTrack(.8f, false);
+		rover.setLeftTrack(.8f, false);
 		rover.waitfor(5000);
-		servoBoard.stopLeftTrack(true);
+		rover.stopLeftTrack(true);
 		rover.waitfor(500);
 
 		LOG.info("Testing right track");
-		servoBoard.setRightTrack(1f, true);
+		rover.setRightTrack(1f, true);
 		rover.waitfor(2500);
-		servoBoard.setRightTrack(.8f, false);
+		rover.setRightTrack(.8f, false);
 		rover.waitfor(1500);
-		servoBoard.stopRightTrack(true);
+		rover.stopRightTrack(true);
 		rover.waitfor(500);
 
 		LOG.info("Testing cam azimuth");
-		servoBoard.setServo(servoBoard.camAzimuth, 0f);
+		rover.setCamAzimuth(0f);
 		rover.waitfor(500);
-		servoBoard.setServo(servoBoard.camAzimuth, 1f);
+		rover.setCamAzimuth(1f);
 		rover.waitfor(500);
-		servoBoard.setServo(servoBoard.camAzimuth, 0.5f);
+		rover.setCamAzimuth(0.5f);
 		rover.waitfor(500);
 
 		LOG.info("Testing cam elevation");
-		servoBoard.setServo(servoBoard.camElevation, 0f);
+		rover.setCamElevation(0f);
 		rover.waitfor(500);
-		servoBoard.setServo(servoBoard.camElevation, 1f);
+		rover.setCamElevation(1f);
 		rover.waitfor(500);
-		servoBoard.setServo(servoBoard.camElevation, 0.5f);
+		rover.setCamElevation(0.5f);
 		rover.waitfor(500);
 
 		LOG.info("Test complete.");
