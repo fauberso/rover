@@ -6,15 +6,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.auberson.rover.component.Rover;
-import net.auberson.rover.component.ServoBoard;
 
 public class DemoPCA9685 {
 	private final static Logger LOG = LoggerFactory.getLogger(DemoPCA9685.class);
 
-	private final static int TRUE = 3000;
-	private final static int FALSE = 0;
-
 	public static void main(String[] args) throws IOException {
+
+		LOG.info("Initializing Controller...");
+		Rover rover = Rover.getInstance();
+		LOG.info("Controller Ready.");
+
+		if (args.length > 0 && args[1].contains("interactive")) {
+			interactive(rover);
+		} else {
+			test(rover);
+		}
+	}
+
+	private static void interactive(Rover rover) throws IOException {
 		boolean exit = false;
 
 		int camElevation = 5;
@@ -23,10 +32,6 @@ public class DemoPCA9685 {
 		float leftSpeed = 0f;
 		boolean leftFwd = true;
 
-		LOG.info("Initializing Controller...");
-		Rover rover = Rover.getInstance();
-		LOG.info("Controller Ready.");
-		test(rover);
 		LOG.info("Controller Ready. Accepting commands.");
 
 		while (!exit) {

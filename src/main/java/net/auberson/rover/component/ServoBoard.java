@@ -12,7 +12,6 @@ import com.pi4j.gpio.extension.pca.PCA9685GpioProvider;
 import com.pi4j.gpio.extension.pca.PCA9685Pin;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinOutput;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.i2c.I2CBus;
@@ -23,9 +22,8 @@ public final class ServoBoard {
 	private final static Logger LOG = LoggerFactory.getLogger(ServoBoard.class);
 
 	private final PCA9685GpioProvider gpioProvider;
-	private final GpioController gpioController;
 	
-	private final List<GpioPinOutput> pwmOutputs = new ArrayList<GpioPinOutput>(32);
+	private final List<GpioPinPwmOutput> pwmOutputs = new ArrayList<GpioPinPwmOutput>(32);
 
 	final GpioPinPwmOutput camAzimuth;
 	final GpioPinPwmOutput camElevation;
@@ -68,10 +66,11 @@ public final class ServoBoard {
 		// Create custom PCA9685 GPIO provider
 		I2CBus bus = I2CFactory.getInstance(busNumber);
 		gpioProvider = new PCA9685GpioProvider(bus, deviceAddress, frequency, frequencyCorrectionFactor);
-		gpioController = GpioFactory.getInstance();
+
+		final GpioController gpioController = GpioFactory.getInstance();
 		
 		// Define outputs and how they are used in the Rover. 
-		// For now: All outputs do PWM, we'll add better names later.
+		// Initialise all as PWM outputs, they can't be used in any other mode
 
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_00, "Output 01"));
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_01, "Output 02"));
@@ -103,17 +102,17 @@ public final class ServoBoard {
 		// Reset outputs
 		gpioProvider.reset();
 	}
-
+	
 	void setServo(GpioPinPwmOutput output, float value) {
-		gpioProvider.setPwm(output.getPin(), Math.round(SERVO_RANGE * value) + SERVO_MIN);
+		output.setPwm(Math.round(SERVO_RANGE * value) + SERVO_MIN);
 	}
 	
 	void setFullRange(GpioPinPwmOutput output, float value) {
-		gpioProvider.setPwm(output.getPin(), Math.round(RAW_RANGE * value) + RAW_MIN);
+		output.setPwm(Math.round(RAW_RANGE * value) + RAW_MIN);
 	}
 	
-	void set(GpioPinPwmOutput output, int duration) {
-		gpioProvider.setPwm(output.getPin(), duration);
+	void setDuration(GpioPinPwmOutput output, int duration) {
+		output.setPwm(duration);
 	}
 
 }
