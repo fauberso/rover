@@ -91,7 +91,7 @@ public class DemoPCA9685 {
 		LOG.info("Testing left track");
 		rover.setLeftTrack(1f, true);
 		rover.waitfor(10000);
-		rover.setLeftTrack(.8f, false);
+		rover.setLeftTrack(.5f, false);
 		rover.waitfor(5000);
 		rover.stopLeftTrack(true);
 		rover.waitfor(500);
@@ -99,7 +99,7 @@ public class DemoPCA9685 {
 		LOG.info("Testing right track");
 		rover.setRightTrack(1f, true);
 		rover.waitfor(2500);
-		rover.setRightTrack(.8f, false);
+		rover.setRightTrack(.5f, false);
 		rover.waitfor(1500);
 		rover.stopRightTrack(true);
 		rover.waitfor(500);

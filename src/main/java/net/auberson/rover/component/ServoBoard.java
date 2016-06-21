@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.crypto.CipherOutputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,10 +33,10 @@ public final class ServoBoard {
 	final GpioPinPwmOutput leftTrackSpeed;
 	final GpioPinPwmOutput rightTrackSpeed;
 
-	static final int RAW_MIN = 80;
+	static final int RAW_MIN = 0;
 	static final int SERVO_MIN = 900;
 	static final int SERVO_MAX = 2100;
-	static final int RAW_MAX = 20400;	
+	static final int RAW_MAX = PCA9685GpioProvider.PWM_STEPS-1;	
 
 	static final int SERVO_RANGE = SERVO_MAX - SERVO_MIN; // 1200
 	static final int SERVO_NEUTRAL = (SERVO_RANGE / 2) + SERVO_MIN; // 1500
@@ -83,6 +85,7 @@ public final class ServoBoard {
 		pwmOutputs.add(leftTrackSpeed);
 		rightTrackSpeed = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_09, "rightTrackSpeed");
 		pwmOutputs.add(rightTrackSpeed);
+		
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_10, "Output 10"));
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_11, "Output 11"));
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_12, "Output 12"));
@@ -99,7 +102,7 @@ public final class ServoBoard {
 	}
 	
 	void setFullRange(GpioPinPwmOutput output, float value) {
-		output.setPwm(Math.round(RAW_RANGE * value) + RAW_MIN);
+        gpioProvider.setPwm(output.getPin(), 0, RAW_MIN + Math.round(RAW_RANGE * value) );
 	}
 	
 	void setDuration(GpioPinPwmOutput output, int duration) {
