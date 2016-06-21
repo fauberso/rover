@@ -46,26 +46,26 @@ public class Rover {
 	}
 	
 	public void setLeftTrack(float value, boolean forwards) {
-		servoBoard.setDuration(forwards?servoBoard.leftTrackBackwards:servoBoard.leftTrackForward, servoBoard.RAW_MIN);
-		servoBoard.setDuration(forwards?servoBoard.leftTrackForward:servoBoard.leftTrackBackwards, servoBoard.RAW_MAX);
+		gpio.leftFwd.setState(forwards);
+		gpio.leftRev.setState(!forwards);
 		servoBoard.setFullRange(servoBoard.leftTrackSpeed, value);
 	}
 	
 	public void stopLeftTrack(boolean brake) {
-		servoBoard.setDuration(servoBoard.leftTrackForward, servoBoard.RAW_MIN);
-		servoBoard.setDuration(servoBoard.leftTrackBackwards, servoBoard.RAW_MIN);
+		gpio.leftFwd.setState(false);
+		gpio.leftRev.setState(false);
 		servoBoard.setDuration(servoBoard.leftTrackSpeed, brake?servoBoard.RAW_MAX:servoBoard.RAW_MIN);
 	}
 
 	public void setRightTrack(float value, boolean forwards) {
-		servoBoard.setDuration(forwards?servoBoard.rightTrackBackwards:servoBoard.rightTrackForward, servoBoard.RAW_MIN);
-		servoBoard.setDuration(forwards?servoBoard.rightTrackForward:servoBoard.rightTrackBackwards, servoBoard.RAW_MAX);
+		gpio.rightFwd.setState(forwards);
+		gpio.rightRev.setState(!forwards);
 		servoBoard.setFullRange(servoBoard.rightTrackSpeed, value);
 	}
 	
 	public void stopRightTrack(boolean brake) {	
-		servoBoard.setDuration(servoBoard.rightTrackForward, servoBoard.RAW_MIN);
-		servoBoard.setDuration(servoBoard.rightTrackBackwards, servoBoard.RAW_MIN);
+		gpio.rightFwd.setState(false);
+		gpio.rightRev.setState(false);
 		servoBoard.setDuration(servoBoard.rightTrackSpeed, brake?servoBoard.RAW_MAX:servoBoard.RAW_MIN);
 	}
 }

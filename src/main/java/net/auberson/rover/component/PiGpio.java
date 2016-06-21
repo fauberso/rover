@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioPinOutput;
 import com.pi4j.io.gpio.RaspiPin;
 
@@ -18,6 +19,11 @@ public final class PiGpio {
 
 	private final List<GpioPinOutput> outputs = new ArrayList<GpioPinOutput>(32);
 
+	final GpioPinDigitalOutput leftFwd;
+	final GpioPinDigitalOutput leftRev;
+	final GpioPinDigitalOutput rightRev;
+	final GpioPinDigitalOutput rightFwd;
+	
 	public PiGpio() throws IOException {
 		LOG.debug("Initializing On-board GPIO Pins");
 		final GpioController gpioController = GpioFactory.getInstance();
@@ -26,10 +32,14 @@ public final class PiGpio {
 		// Initialize all pins that are actually accessible on the header, note
 		// where the reserved ones are used
 
-		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, "Output 00 / Pin 11"));
-		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Output 01 / Pin 12"));
-		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Output 02 / Pin 13"));
-		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Output 03 / Pin 15"));
+		leftFwd = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00, "H-Bridge IN1");
+		outputs.add(leftFwd);
+		leftRev = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_01, "H-Bridge IN2");
+		outputs.add(leftRev);
+		rightRev = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_02, "H-Bridge IN3");
+		outputs.add(rightRev);
+		rightFwd = gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_03, "H-Bridge IN4");
+		outputs.add(rightFwd);
 
 		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Output 04 / Pin 16"));
 		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Output 05 / Pin 18"));
@@ -48,8 +58,8 @@ public final class PiGpio {
 		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_14, "Output 14 / Pin 23"));
 
 		// Also used as UART:
-		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_13, "Output 15 / Pin 08"));
-		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_14, "Output 16 / Pin 10"));
+		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_15, "Output 15 / Pin 08"));
+		outputs.add(gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_16, "Output 16 / Pin 10"));
 
 	}
 

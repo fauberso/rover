@@ -29,11 +29,6 @@ public final class ServoBoard {
 	final GpioPinPwmOutput camElevation;
 
 	final GpioPinPwmOutput leftTrackSpeed;
-	final GpioPinPwmOutput leftTrackForward;
-	final GpioPinPwmOutput leftTrackBackwards;
-
-	final GpioPinPwmOutput rightTrackForward;
-	final GpioPinPwmOutput rightTrackBackwards;
 	final GpioPinPwmOutput rightTrackSpeed;
 
 	static final int RAW_MIN = 80;
@@ -86,16 +81,12 @@ public final class ServoBoard {
 		
 		leftTrackSpeed = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_08, "LeftTrackSpeed");
 		pwmOutputs.add(leftTrackSpeed);
-		leftTrackForward = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_09, "LeftTrackForward");
-		pwmOutputs.add(leftTrackForward);
-		leftTrackBackwards = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_10, "LeftTrackBackwards");
-		pwmOutputs.add(leftTrackBackwards);
-		rightTrackForward = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_11, "RightTrackForward");
-		pwmOutputs.add(rightTrackForward);
-		rightTrackBackwards = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_12, "RightTrackBackwards");
-		pwmOutputs.add(rightTrackBackwards);
-		rightTrackSpeed = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_13, "RightTrackSpeed");
+		rightTrackSpeed = gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_09, "rightTrackSpeed");
 		pwmOutputs.add(rightTrackSpeed);
+		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_10, "Output 10"));
+		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_11, "Output 11"));
+		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_12, "Output 12"));
+		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_13, "Output 13"));
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_14, "Output 14"));
 		pwmOutputs.add(gpioController.provisionPwmOutputPin(gpioProvider, PCA9685Pin.PWM_15, "Output 15"));
 		
